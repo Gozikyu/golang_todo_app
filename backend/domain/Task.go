@@ -1,20 +1,23 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+)
 
 type Task struct {
-	taskId      string
-	userId      string
-	Title       string
-	Description string
-	Status      string // NOT_STARTED, IN_PROGRESS, DONE
+	TaskId      string `db:"task_id"`
+	UserId      string `db:"user_id"`
+	Title       string `db:"title"`
+	Description string `db:"description"`
+	Status      string `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
 }
 
 var STATUS = []string{"NOT_STARTED", "IN_PROGRESS", "DONE"}
 
 type ITaskRepository interface {
-	GetTask(taskId string) *Task
-	SaveTask(task *Task)
+	GetTask(taskId string) (*Task, error)
+	GetTasks(userId string) ([]*Task, error)
+	SaveTask(task *Task) error
 }
 
 func NewTask(taskId string, userId string, title string, description string, status string) (*Task, error) {
@@ -30,8 +33,8 @@ func NewTask(taskId string, userId string, title string, description string, sta
 	}
 
 	return &Task{
-		taskId:      taskId,
-		userId:      userId,
+		TaskId:      taskId,
+		UserId:      userId,
 		Title:       title,
 		Description: description,
 		Status:      status,
