@@ -14,7 +14,8 @@ CREATE TABLE tasks (
     user_id VARCHAR(255) REFERENCES users(user_id),
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    status VARCHAR(255) NOT NULL
+    status VARCHAR(255) NOT NULL,
+    deleted_at TIMESTAMP DEFAULT NULL
 );
 
 INSERT INTO tasks (task_id, user_id, title, description, status) VALUES

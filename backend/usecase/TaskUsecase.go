@@ -27,7 +27,7 @@ func (u *TaskUsecase) CreateTask(newTask NewTask) error {
 	//uuidをアプリ側で発行する
 	id := uuid.New().String()
 
-	task, err := domain.NewTask(id, newTask.UserId, newTask.Title, newTask.Description, newTask.Status)
+	task, err := domain.NewTask(domain.NotValidatedTask{TaskId: id, UserId: newTask.UserId, Title: newTask.Title, Description: newTask.Description, Status: newTask.Status})
 	if err != nil {
 		return errors.New("タスクの作成に失敗しました")
 	}
@@ -46,4 +46,23 @@ func (u *TaskUsecase) GetUserTasks(userId string) ([]*domain.Task, error) {
 	}
 
 	return tasks, nil
+}
+
+func (u *TaskUsecase) UpdateTask(task *domain.Task) error {
+	err := u.taskRepository.UpdateTask(task)
+	if err != nil {
+		return errors.New(fmt.Sprintf("%vのタスク更新に失敗しました", task))
+	}
+
+	return nil
+}
+
+func (u *TaskUsecase) DeleteTask(taskId string) error {
+	err := u.taskRepository.DeleteTask(taskId)
+	if err != nil {
+		fmt.Println(err)
+		return errors.New(fmt.Sprintf("%vのタスク削除に失敗しました", taskId))
+	}
+
+	return nil
 }

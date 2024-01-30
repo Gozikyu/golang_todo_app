@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"time"
 	"todo_app/domain"
 
 	"github.com/jmoiron/sqlx"
@@ -14,20 +15,12 @@ type TaskRepository struct {
 	db *sqlx.DB
 }
 
-type NotValidatedTask struct {
-	TaskId      string `db:"task_id"`
-	UserId      string `db:"user_id"`
-	Title       string `db:"title"`
-	Description string `db:"description"`
-	Status      string `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
-}
-
 func NewTaskRepository(db *sqlx.DB) TaskRepository {
 	return TaskRepository{db: db}
 }
 
 func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
-	var t NotValidatedTask
+	var t domain.NotValidatedTask
 	err := r.db.Get(&t, "SELECT * FROM tasks WHERE task_id=$1", taskId)
 	if err == sql.ErrNoRows {
 		fmt.Printf("%vのタスクが見つかりませんでした", taskId)
@@ -36,7 +29,7 @@ func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
 		return nil, errors.New(fmt.Sprintf("%vのタスク取得時にエラーが発生しました", taskId))
 	}
 
-	task, err := domain.NewTask(t.TaskId, t.UserId, t.Title, t.Description, t.Status)
+	task, err := domain.NewTask(t)
 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("%vドメインのタスク型に変換時にエラーが発生しました", t))
@@ -46,7 +39,7 @@ func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
 }
 
 func (r TaskRepository) GetTasks(userId string) ([]*domain.Task, error) {
-	var t []NotValidatedTask
+	var t []domain.NotValidatedTask
 	err := r.db.Select(&t, "SELECT * FROM tasks WHERE user_id=$1", userId)
 	if err == sql.ErrNoRows {
 		fmt.Printf("%vのタスクが見つかりませんでした", userId)
@@ -57,7 +50,7 @@ func (r TaskRepository) GetTasks(userId string) ([]*domain.Task, error) {
 
 	tasks := []*domain.Task{}
 	for _, v := range t {
-		task, err := domain.NewTask(v.TaskId, v.UserId, v.Title, v.Description, v.Status)
+		task, err := domain.NewTask(v)
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("%vドメインのタスク型に変換時にエラーが発生しました", t))
 		}
@@ -73,6 +66,30 @@ func (r TaskRepository) SaveTask(task *domain.Task) error {
 
 	if err != nil {
 		return errors.New(fmt.Sprintf("%vタスクのDB登録時にエラーが発生しました", task))
+	}
+
+	return nil
+}
+
+func (r TaskRepository) UpdateTask(task *domain.Task) error {
+	_, err := r.db.NamedExec(`UPDATE tasks SET user_id = :user_id, title = :title, description = :description, status = :status WHERE task_id = :task_id`, task)
+
+	if err != nil {
+		return errors.New(fmt.Sprintf("%vタスクの更新時にエラーが発生しました", task))
+	}
+
+	return nil
+}
+
+func (r TaskRepository) DeleteTask(taskId string) error {
+	// deletedAt に現在時刻を設定
+	deletedAt := time.Now()
+
+	_, err := r.db.Exec(`UPDATE tasks SET deleted_at = $1 WHERE task_id = $2`, deletedAt, taskId)
+
+	if err != nil {
+		fmt.Println(err)
+		return errors.New(fmt.Sprintf("%vタスクの削除時にエラーが発生しました", taskId))
 	}
 
 	return nil
