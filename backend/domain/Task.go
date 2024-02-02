@@ -1,9 +1,5 @@
 package domain
 
-import (
-	"errors"
-)
-
 /** バリデーション済みのタスク*/
 type Task struct {
 	TaskId      string `db:"task_id"`
@@ -20,6 +16,14 @@ type NotValidatedTask struct {
 	Title       string `db:"title"`
 	Description string `db:"description"`
 	Status      string `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
+}
+
+type TaskValidationError struct {
+	Message string
+}
+
+func (te *TaskValidationError) Error() string {
+	return "タスクとして適切な値ではありません。" + te.Message
 }
 
 // TODO: もっと上手く定義できそう
@@ -42,7 +46,7 @@ func NewTask(task NotValidatedTask) (*Task, error) {
 		}
 	}
 	if !found {
-		return nil, errors.New("ステータスとして定義されていない文字列です")
+		return nil, &TaskValidationError{Message: "ステータスとして不適な値"}
 	}
 
 	return &Task{
