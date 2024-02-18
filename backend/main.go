@@ -21,6 +21,7 @@ func main() {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS()) // 必要に応じて細かいCORSの設定を行う
 
 	db, err := sqlx.Connect("postgres", "user=app password=password dbname=app_db sslmode=disable")
 	if err != nil {

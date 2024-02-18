@@ -1,5 +1,6 @@
-import { Table } from '@/components/Elements';
+import { Spinner, Table } from '@/components/Elements';
 import { Task } from '../types';
+import { useTasks } from '../api/getTasks';
 
 const dummyTasks = [
   {
@@ -26,25 +27,29 @@ const dummyTasks = [
 ];
 
 //TODO: 仮実装 reactQueryを使うようにする
-const queryTasks = (): Task[] => {
-  return dummyTasks;
-};
+// const queryTasks = (): Task[] => {
+//   return dummyTasks;
+// };
 
 export const TaskList = () => {
-  const data = queryTasks();
-  //   if (usersQuery.isLoading) {
-  //     return (
-  //       <div className="w-full h-48 flex justify-center items-center">
-  //         <Spinner size="lg" />
-  //       </div>
-  //     );
-  //   }
+  //TODO: userIdを動的に入れる
+  const tasksQuery = useTasks('1');
 
-  //   if (!usersQuery.data) return null;
+  if (tasksQuery.isLoading) {
+    return (
+      <div className="w-full h-48 flex justify-center items-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (!tasksQuery.data) return null;
+
+  console.log(tasksQuery.data);
 
   return (
     <Table<Task>
-      data={data}
+      data={tasksQuery.data}
       columns={[
         {
           title: 'タイトル',

@@ -5,7 +5,7 @@ export const Tasks = () => {
   //TODO: 認証や全体レイアウトを追加
 
   return (
-    <ContentLayout title="tasks">
+    <ContentLayout title="タスク一覧">
       <TaskList />
     </ContentLayout>
   );

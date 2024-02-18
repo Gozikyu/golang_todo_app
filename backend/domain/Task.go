@@ -1,21 +1,24 @@
 package domain
 
+import "database/sql"
+
 /** バリデーション済みのタスク*/
 type Task struct {
-	TaskId      string `db:"task_id"`
-	UserId      string `db:"user_id"`
-	Title       string `db:"title"`
-	Description string `db:"description"`
-	Status      string `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
+	TaskId      string `db:"task_id" json:"taskId"`
+	UserId      string `db:"user_id"  json:"userId"`
+	Title       string `db:"title" json:"title"`
+	Description string `db:"description" json:"description"`
+	Status      string `db:"status" json:"status"` // NOT_STARTED, IN_PROGRESS, DONE
 }
 
 /** バリデーション前のタスク*/
 type NotValidatedTask struct {
-	TaskId      string `db:"task_id"`
-	UserId      string `db:"user_id"`
-	Title       string `db:"title"`
-	Description string `db:"description"`
-	Status      string `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
+	TaskId      string       `db:"task_id" `
+	UserId      string       `db:"user_id"`
+	Title       string       `db:"title"`
+	Description string       `db:"description"`
+	Status      string       `db:"status"` // NOT_STARTED, IN_PROGRESS, DONE
+	DeletedAt   sql.NullTime `db:"deleted_at"`
 }
 
 type TaskValidationError struct {
