@@ -1,11 +1,15 @@
+import { Task } from '@/features/tasks/types';
+import FormDialog from '../FormDialog/FormDialog';
+
 type TableColumn<Entry> = {
   title: string;
   field: keyof Entry;
 };
 
+//TODO: 汎用的に使えるコンポーネントを抽出する
 export type TableProps<Entry> = {
-  data: Entry[];
-  columns: TableColumn<Entry>[];
+  data: Task[];
+  columns: TableColumn<Task>[];
 };
 
 export const Table = <Entry extends Record<string, string | number>>({
@@ -53,6 +57,9 @@ export const Table = <Entry extends Record<string, string | number>>({
                         {/* TODO: アサーションをやめる */}
                       </td>
                     ))}
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      <FormDialog task={entry} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
