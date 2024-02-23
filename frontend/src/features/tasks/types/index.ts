@@ -5,3 +5,5 @@ export type Task = {
   description: string;
   status: string;
 };
+
+export type NewTask = Omit<Task, 'taskId'>;

@@ -5,9 +5,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Task } from '@/features/tasks/types';
-import { useUpdateTask } from '@/features/tasks/api/updateTask';
 import { MenuItem } from '@mui/material';
+import { useCreateTask } from '../api/createTask';
 
 //TODO: 一箇所で定義する
 const status = [
@@ -26,14 +25,20 @@ const status = [
 ];
 
 type Props = {
-  task: Task;
+  userId: string;
 };
 
-export default function FormDialog(props: Props) {
+export const CreateDialog = (props: Props) => {
+  const initialNewTask = {
+    userId: props.userId,
+    title: '',
+    description: '',
+    status: 'NOT_STARTED',
+  };
   const [open, setOpen] = useState(false);
-  const [task, setTask] = useState<Task>(() => props.task);
+  const [task, setTask] = useState(initialNewTask);
 
-  const taskMutation = useUpdateTask();
+  const taskMutation = useCreateTask();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -41,10 +46,12 @@ export default function FormDialog(props: Props) {
 
   const handleClose = () => {
     setOpen(false);
+    setTask(initialNewTask);
   };
 
   const handleSubmit = () => {
-    taskMutation.mutate({ userId: '1', data: task }); //TODO: userIdを動的に設定する
+    //TODO: 処理失敗時の挙動を追加する
+    taskMutation.mutate({ userId: props.userId, data: task });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +65,7 @@ export default function FormDialog(props: Props) {
   return (
     <React.Fragment>
       <Button variant="outlined" onClick={handleClickOpen}>
-        編集
+        タスク新規作成
       </Button>
       <Dialog
         open={open}
@@ -119,19 +126,12 @@ export default function FormDialog(props: Props) {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              handleClose();
-              setTask(props.task); // キャンセルの場合は元の状態に戻しておく
-            }}
-          >
-            キャンセル
-          </Button>
+          <Button onClick={handleClose}>キャンセル</Button>
           <Button onClick={handleSubmit} type="submit">
-            保存
+            作成
           </Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
   );
-}
+};
