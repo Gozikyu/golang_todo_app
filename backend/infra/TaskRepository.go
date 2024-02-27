@@ -40,7 +40,7 @@ func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
 
 func (r TaskRepository) GetTasks(userId string) ([]*domain.Task, error) {
 	var t []domain.NotValidatedTask
-	err := r.db.Select(&t, "SELECT * FROM tasks WHERE user_id=$1", userId)
+	err := r.db.Select(&t, "SELECT * FROM tasks WHERE user_id=$1 AND deleted_at IS NULL", userId)
 	if err == sql.ErrNoRows {
 		fmt.Printf("%vのタスクが見つかりませんでした", userId)
 		return nil, nil

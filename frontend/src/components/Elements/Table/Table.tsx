@@ -1,5 +1,6 @@
 import { Task } from '@/features/tasks/types';
 import FormDialog from '../FormDialog/FormDialog';
+import { DeleteButton } from '@/features/tasks/components/DeleteButton';
 
 type TableColumn<Entry> = {
   title: string;
@@ -59,6 +60,9 @@ export const Table = <Entry extends Record<string, string | number>>({
                     ))}
                     <td className="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                       <FormDialog task={entry} />
+                    </td>
+                    <td>
+                      <DeleteButton taskId={entry.taskId} />
                     </td>
                   </tr>
                 ))}
