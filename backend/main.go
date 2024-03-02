@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"todo_app/domain"
 	"todo_app/infra"
 	"todo_app/usecase"
@@ -15,7 +16,6 @@ import (
 )
 
 func main() {
-
 	e := echo.New()
 
 	// Middleware
@@ -29,8 +29,10 @@ func main() {
 	}
 
 	tr := infra.NewTaskRepository(db)
+	tu := infra.NewUserRepository(db)
 
 	taskUsecase := usecase.NewTaskUsecase(tr)
+	userUsecase := usecase.NewUserUsecase(tu)
 
 	/**
 	ユーザーの全タスク取得API
@@ -127,6 +129,30 @@ func main() {
 			return errors.New(fmt.Sprintf("タスク更新APIでエラーが発生しました。task: %v", task))
 		}
 
+		return c.JSON(http.StatusOK, "success")
+	})
+
+	e.GET("/users", func(c echo.Context) error {
+		c.Response().Header().Set("Access-Control-Expose-Headers", "X-Total-Count")
+
+		users, err := userUsecase.GetUsers()
+		if err != nil {
+			return errors.New(fmt.Sprintf("全ユーザー取得APIでエラーが発生しました。"))
+		}
+
+		totalCount := len(users)
+
+		c.Response().Header().Set("X-Total-Count", strconv.Itoa(totalCount))
+		return c.JSON(http.StatusOK, users)
+	})
+
+	e.POST("/users", func(c echo.Context) error {
+		var user usecase.NewUser
+		if err := c.Bind(&user); err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"status": err.Error()})
+		}
+
+		//TODO: ユーザー作成処理を追加
 		return c.JSON(http.StatusOK, "success")
 	})
 

@@ -3,6 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import { Spinner } from '@/components/Elements';
 import { Tasks } from '@/features/tasks/routes/Tasks';
+import AdminApp from '@/Admin/App';
 // import { MainLayout } from '@/components/Layout';
 // import { lazyImport } from '@/utils/lazyImport';
 
@@ -32,14 +33,14 @@ const App = () => {
 
 export const protectedRoutes = [
   {
-    path: '/app',
     element: <App />,
     children: [
       //   { path: '/discussions/*', element: <DiscussionsRoutes /> },
       //   { path: '/users', element: <Users /> },
       //   { path: '/profile', element: <Profile /> },
       //   { path: '/', element: <Dashboard /> },
-      { path: '/app/tasks', element: <Tasks /> },
+      { path: '/tasks', element: <Tasks /> },
+      { path: '/admin/*', element: <AdminApp /> },
 
       { path: '*', element: <Navigate to="." /> },
     ],
