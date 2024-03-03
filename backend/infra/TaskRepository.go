@@ -21,7 +21,7 @@ func NewTaskRepository(db *sqlx.DB) TaskRepository {
 
 func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
 	var t domain.NotValidatedTask
-	err := r.db.Get(&t, "SELECT * FROM tasks WHERE task_id=$1", taskId)
+	err := r.db.Get(&t, "SELECT * FROM tasks WHERE task_id=$1 AND deleted_at IS NULL", taskId)
 	if err == sql.ErrNoRows {
 		fmt.Printf("%vのタスクが見つかりませんでした", taskId)
 		return nil, nil

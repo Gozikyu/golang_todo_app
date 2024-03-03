@@ -12,18 +12,11 @@ type TaskUsecase struct {
 	taskRepository domain.ITaskRepository
 }
 
-type NewTask struct {
-	UserId      string
-	Title       string
-	Description string
-	Status      string
-}
-
 func NewTaskUsecase(r domain.ITaskRepository) *TaskUsecase {
 	return &TaskUsecase{taskRepository: r}
 }
 
-func (u *TaskUsecase) CreateTask(newTask NewTask) error {
+func (u *TaskUsecase) CreateTask(newTask domain.NoIdTask) error {
 	//uuidをアプリ側で発行する
 	id := uuid.New().String()
 

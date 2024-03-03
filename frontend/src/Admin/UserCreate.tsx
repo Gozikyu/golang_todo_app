@@ -5,13 +5,23 @@ import {
   TextInput,
   useCreate,
   CreateProps,
+  useRedirect,
 } from 'react-admin';
 
 const UserCreate: React.FC<CreateProps> = (props) => {
   const [create] = useCreate('users');
+  const redirect = useRedirect();
 
   const onSave = (values: any) => {
-    create('users', { data: values });
+    create(
+      'users',
+      { data: values },
+      {
+        onSuccess: () => {
+          redirect('/admin/users');
+        },
+      }
+    );
   };
 
   return (

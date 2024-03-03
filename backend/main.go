@@ -66,7 +66,7 @@ func main() {
 		}'
 	*/
 	e.POST("/:userId/tasks", func(c echo.Context) error {
-		var task usecase.NewTask
+		var task domain.NoIdTask
 		if err := c.Bind(&task); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"status": err.Error()})
 		}
@@ -132,6 +132,7 @@ func main() {
 		return c.JSON(http.StatusOK, "success")
 	})
 
+	//TODO: ページネーションに対応させる
 	e.GET("/users", func(c echo.Context) error {
 		c.Response().Header().Set("Access-Control-Expose-Headers", "X-Total-Count")
 
@@ -146,14 +147,63 @@ func main() {
 		return c.JSON(http.StatusOK, users)
 	})
 
+	e.GET("/users/:userId", func(c echo.Context) error {
+		userId := c.Param("userId")
+
+		user, err := userUsecase.GetUser(userId)
+		if err != nil {
+			fmt.Println(err)
+			return errors.New(fmt.Sprintf("ユーザー取得APIでエラーが発生しました。 userId: %v", userId))
+		}
+
+		return c.JSON(http.StatusOK, user)
+	})
+
 	e.POST("/users", func(c echo.Context) error {
-		var user usecase.NewUser
+		var user domain.NoIdUser
 		if err := c.Bind(&user); err != nil {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"status": err.Error()})
 		}
 
-		//TODO: ユーザー作成処理を追加
+		err := userUsecase.CreateUser(user)
+		if err != nil {
+			return errors.New(fmt.Sprintf("ユーザーの新規作成APIでエラーが発生しました。 user: %v", user))
+		}
+
 		return c.JSON(http.StatusOK, "success")
+	})
+
+	e.DELETE("/users/:userId", func(c echo.Context) error {
+		userId := c.Param("userId")
+
+		err := userUsecase.DeleteUser(userId)
+		if err != nil {
+			fmt.Println(err)
+			return errors.New(fmt.Sprintf("ユーザータスク削除APIでエラーが発生しました。 userId: %v", userId))
+		}
+
+		return c.JSON(http.StatusOK, "success")
+
+	})
+
+	e.PUT("/users/:userId", func(c echo.Context) error {
+		userId := c.Param("userId")
+		var newUser domain.NoIdUser
+		if err := c.Bind(&newUser); err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"status": err.Error()})
+		}
+
+		user, err := domain.NewUser(domain.NotValidatedUser{UserId: userId, Name: newUser.Name, Email: newUser.Email})
+		if err != nil {
+			return errors.New(fmt.Sprintf("ドメインのユーザー型への変換に失敗しました。task: %v", user))
+		}
+
+		uu, err := userUsecase.UpdateUser(user)
+		if err != nil {
+			return errors.New(fmt.Sprintf("ユーザー更新APIでエラーが発生しました。task: %v", user))
+		}
+
+		return c.JSON(http.StatusOK, uu)
 	})
 
 	// Start server

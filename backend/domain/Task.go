@@ -21,6 +21,13 @@ type NotValidatedTask struct {
 	DeletedAt   sql.NullTime `db:"deleted_at"`
 }
 
+type NoIdTask struct {
+	UserId      string
+	Title       string
+	Description string
+	Status      string
+}
+
 type TaskValidationError struct {
 	Message string
 }

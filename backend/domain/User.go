@@ -7,9 +7,9 @@ import (
 )
 
 type User struct {
-	UserId string `json:"id"`
-	Name   string `json:"name"`
-	Email  string `json:"email"`
+	UserId string `db:"user_id" json:"id"`
+	Name   string `db:"name" json:"name"`
+	Email  string `db:"email" json:"email"`
 }
 
 /** バリデーション前のユーザー*/
@@ -20,11 +20,17 @@ type NotValidatedUser struct {
 	DeletedAt sql.NullTime `db:"deleted_at"`
 }
 
+type NoIdUser struct {
+	Name  string
+	Email string
+}
+
 type IUserRepository interface {
 	GetUsers() ([]*User, error)
-	// SaveUser(user *User) error
-	// UpdateUser(user *User) error
-	// DeleteUser(userId int) error
+	GetUser(userId string) (*User, error)
+	SaveUser(user *User) error
+	UpdateUser(user *User) (*User, error)
+	DeleteUser(userId string) error
 }
 
 func NewUser(user NotValidatedUser) (*User, error) {
