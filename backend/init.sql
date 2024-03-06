@@ -2,13 +2,14 @@ CREATE TABLE users (
     user_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     deleted_at TIMESTAMP DEFAULT NULL
 );
 
-INSERT INTO users (user_id, name, email) VALUES
-('1', '一郎', 'ichiro@example.com'),
-('2', '二郎', 'jiro@example.com'),
-('3', '三郎', 'saburo@example.com');
+INSERT INTO users (user_id, name, email, password) VALUES
+('1', '一郎', 'ichiro@example.com', 'password'),
+('2', '二郎', 'jiro@example.com', 'password'),
+('3', '三郎', 'saburo@example.com', 'password');
 
 CREATE TABLE tasks (
     task_id VARCHAR(255) PRIMARY KEY,

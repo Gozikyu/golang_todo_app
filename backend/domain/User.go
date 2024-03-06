@@ -7,9 +7,10 @@ import (
 )
 
 type User struct {
-	UserId string `db:"user_id" json:"id"`
-	Name   string `db:"name" json:"name"`
-	Email  string `db:"email" json:"email"`
+	UserId   string `db:"user_id" json:"id"`
+	Name     string `db:"name" json:"name"`
+	Email    string `db:"email" json:"email"`
+	Password string `db:"password" json:"password"`
 }
 
 /** バリデーション前のユーザー*/
@@ -17,12 +18,14 @@ type NotValidatedUser struct {
 	UserId    string       `db:"user_id"`
 	Name      string       `db:"name"`
 	Email     string       `db:"email"`
+	Password  string       `db:"password"`
 	DeletedAt sql.NullTime `db:"deleted_at"`
 }
 
 type NoIdUser struct {
-	Name  string
-	Email string
+	Name     string
+	Email    string
+	Password string
 }
 
 type IUserRepository interface {
@@ -39,8 +42,9 @@ func NewUser(user NotValidatedUser) (*User, error) {
 	}
 
 	return &User{
-		UserId: user.UserId,
-		Name:   user.Name,
-		Email:  user.Email,
+		UserId:   user.UserId,
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
 	}, nil
 }
