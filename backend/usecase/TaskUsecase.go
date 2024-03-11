@@ -12,8 +12,8 @@ type TaskUsecase struct {
 	taskRepository domain.ITaskRepository
 }
 
-func NewTaskUsecase(r domain.ITaskRepository) *TaskUsecase {
-	return &TaskUsecase{taskRepository: r}
+func NewTaskUsecase(r domain.ITaskRepository) TaskUsecase {
+	return TaskUsecase{taskRepository: r}
 }
 
 func (u *TaskUsecase) CreateTask(newTask domain.NoIdTask) error {
