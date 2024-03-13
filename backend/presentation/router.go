@@ -1,15 +1,40 @@
 package presentation
 
 import (
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"errors"
+	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
+	echojwt "github.com/labstack/echo-jwt/v4"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
-func InitRouting(e *echo.Echo, taskHandler TaskHandler, userHandler UserHandler) {
+func InitRouting(e *echo.Echo, taskHandler TaskHandler, userHandler UserHandler, loginHandler LoginHandler) {
 	// ミドルウェア
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS()) // 必要に応じて細かいCORSの設定を行う
+
+	r := e.Group("/restricted")
+
+	r.Use(echojwt.JWT([]byte("secret")))
+
+	//ログイン
+	e.POST("/login", loginHandler.Login())
+	r.GET("/hoge", func(c echo.Context) error {
+
+		token, ok := c.Get("user").(*jwt.Token) // by default token is stored under `user` key
+
+		if !ok {
+			return errors.New("JWT token missing or invalid")
+		}
+		claims, ok := token.Claims.(jwt.MapClaims) // by default claims is of type `jwt.MapClaims`
+		if !ok {
+			return errors.New("failed to cast claims as jwt.MapClaims")
+		}
+		return c.JSON(http.StatusOK, claims)
+	})
 
 	//タスク関連のAPI
 	e.GET("/:userId/tasks", taskHandler.GetTasks())

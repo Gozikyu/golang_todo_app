@@ -104,3 +104,21 @@ func (r UserRepository) DeleteUser(userId string) error {
 
 	return nil
 }
+
+func (r UserRepository) GetUserByEmailAndPassword(email string, password string) (*domain.User, error) {
+	var u domain.NotValidatedUser
+	err := r.db.Get(&u, "SELECT * FROM users WHERE email=$1 AND password=$2 AND deleted_at IS NULL", email, password)
+	if err == sql.ErrNoRows {
+		fmt.Printf("%vのユーザーが見つかりませんでした", email)
+		return nil, nil
+	} else if err != nil {
+		fmt.Print(err)
+		return nil, errors.New(fmt.Sprintf("%vのユーザー取得時にエラーが発生しました", email))
+	}
+
+	user, err := domain.NewUser(u)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("%vドメインのユーザー型に変換時にエラーが発生しました", u))
+	}
+	return user, nil
+}

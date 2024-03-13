@@ -7,7 +7,7 @@ import (
 	"todo_app/usecase"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -18,12 +18,16 @@ func main() {
 
 	tr := infra.NewTaskRepository(db)
 	ur := infra.NewUserRepository(db)
+
 	tu := usecase.NewTaskUsecase(tr)
 	uu := usecase.NewUserUsecase(ur)
+	lu := usecase.NewLoginUsecase(ur)
+
 	th := presentation.NewTaskHandler(tu)
 	uh := presentation.NewUserHandler(uu)
+	lh := presentation.NewLoginHandler(lu)
 
 	e := echo.New()
-	presentation.InitRouting(e, th, uh)
+	presentation.InitRouting(e, th, uh, lh)
 	e.Logger.Fatal(e.Start(":8888"))
 }

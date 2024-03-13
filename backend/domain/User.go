@@ -34,6 +34,7 @@ type IUserRepository interface {
 	SaveUser(user *User) error
 	UpdateUser(user *User) (*User, error)
 	DeleteUser(userId string) error
+	GetUserByEmailAndPassword(email string, password string) (*User, error)
 }
 
 func NewUser(user NotValidatedUser) (*User, error) {
