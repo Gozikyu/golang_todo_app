@@ -46,9 +46,20 @@ func (th *taskHandler) CreateTask() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, map[string]string{"status": err.Error()})
 		}
 
+		userId, e := GetUserIdFromToken(c)
+		if e != nil {
+			fmt.Print(e)
+			return fmt.Errorf("トークンからのuserId取得に失敗しました task: %v", task)
+		}
+
+		if userId != task.UserId {
+			return fmt.Errorf("トークンのuserIdと新規作成するタスクのuserIdが異なります: %v != %v", userId, task.UserId)
+		}
+
 		err := th.tu.CreateTask(task)
 		if err != nil {
-			return errors.New(fmt.Sprintf("タスクの新規作成APIでエラーが発生しました。 task: %v", task))
+			return fmt.Errorf("タスクの新規作成APIでエラーが発生しました。 task: %v", task)
+
 		}
 
 		return c.JSON(http.StatusOK, "success")

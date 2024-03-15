@@ -1,7 +1,6 @@
 package presentation
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -70,20 +69,4 @@ func (lh *loginHandler) Login() echo.HandlerFunc {
 			"token": t,
 		})
 	}
-}
-
-func accessible(c echo.Context) error {
-	return c.String(http.StatusOK, "Accessible")
-}
-
-func restricted(c echo.Context) error {
-	token, ok := c.Get("user").(*jwt.Token) // by default token is stored under `user` key
-	if !ok {
-		return errors.New("JWT token missing or invalid")
-	}
-	claims, ok := token.Claims.(jwt.MapClaims) // by default claims is of type `jwt.MapClaims`
-	if !ok {
-		return errors.New("failed to cast claims as jwt.MapClaims")
-	}
-	return c.JSON(http.StatusOK, claims)
 }

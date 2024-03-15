@@ -55,8 +55,9 @@ POST /:userId/tasks
 
 ```bash
 curl -X POST \
- http://localhost:8888/your_user_id/tasks \
- -H 'Content-Type: application/json' \
+ http://localhost:8888/restricted/1/tasks \
+ -H  'Content-Type: application/json' \
+ -H  'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwIjoxNzEwNTkyNTA5fQ.Kj-UjyIuAXitKFBd_XK4mSF1t9Z-KR3yx311D5--P3A' \
  -d '{
 "UserId": "1",
 "Title": "Sample Task",
