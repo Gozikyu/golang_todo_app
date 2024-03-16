@@ -2,9 +2,12 @@ import { Spinner, Table } from '@/components/Elements';
 import { Task } from '../types';
 import { useTasks } from '../api/getTasks';
 
-export const TaskList = () => {
-  //TODO: userIdを動的に入れる
-  const tasksQuery = useTasks('1');
+type Props = {
+  userId: string;
+};
+
+export const TaskList = (props: Props) => {
+  const tasksQuery = useTasks(props.userId);
 
   if (tasksQuery.isLoading) {
     return (

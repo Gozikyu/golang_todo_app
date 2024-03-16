@@ -66,7 +66,8 @@ func (lh *loginHandler) Login() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, echo.Map{
-			"token": t,
+			"token":  t,
+			"userId": user.UserId,
 		})
 	}
 }

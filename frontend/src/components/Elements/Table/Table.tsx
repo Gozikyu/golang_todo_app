@@ -1,6 +1,7 @@
 import { Task } from '@/features/tasks/types';
 import FormDialog from '../FormDialog/FormDialog';
 import { DeleteButton } from '@/features/tasks/components/DeleteButton';
+import storage from '@/util/storage';
 
 type TableColumn<Entry> = {
   title: string;
@@ -24,6 +25,9 @@ export const Table = <Entry extends Record<string, string | number>>({
       </div>
     );
   }
+
+  const userId = storage.getUserId();
+
   return (
     <div className="flex flex-col">
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -62,7 +66,7 @@ export const Table = <Entry extends Record<string, string | number>>({
                       <FormDialog task={entry} />
                     </td>
                     <td>
-                      <DeleteButton taskId={entry.taskId} />
+                      <DeleteButton userId={userId} taskId={entry.taskId} />
                     </td>
                   </tr>
                 ))}

@@ -20,6 +20,6 @@ const loginWithEmailAndPassword = async (
 
 export const loginAndSetToken = async (data: LoginVariables) => {
   const response = await loginWithEmailAndPassword(data);
-  const { token } = response;
-  storage.setToken(token);
+  const { token, userId } = response;
+  storage.setTokenAndUserId(token, userId);
 };

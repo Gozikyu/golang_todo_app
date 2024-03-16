@@ -1,5 +1,6 @@
 export type LoginResponse = {
   token: string;
+  userId: string;
 };
 
 export function isLoginResponse(obj: any): obj is LoginResponse {
@@ -7,6 +8,8 @@ export function isLoginResponse(obj: any): obj is LoginResponse {
     typeof obj === 'object' &&
     obj !== null &&
     'token' in obj &&
-    typeof obj.token === 'string'
+    typeof obj.token === 'string' &&
+    'userId' in obj &&
+    typeof obj.userId === 'string'
   );
 }

@@ -1,10 +1,10 @@
-import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { QueryClientProvider } from 'react-query';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Spinner, Button } from '@/components/Elements';
 
 import { queryClient } from '@/lib/react-query';
+import { Suspense } from 'react';
 
 const ErrorFallback = () => {
   return (
@@ -29,7 +29,7 @@ type AppProviderProps = {
 
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
-    <React.Suspense
+    <Suspense
       fallback={
         <div className="flex items-center justify-center w-screen h-screen">
           <Spinner size="xl" />
@@ -41,6 +41,6 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           <Router>{children}</Router>
         </QueryClientProvider>
       </ErrorBoundary>
-    </React.Suspense>
+    </Suspense>
   );
 };
