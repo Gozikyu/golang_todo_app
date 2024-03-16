@@ -1,11 +1,21 @@
-import Axios, { InternalAxiosRequestConfig } from 'axios';
+import Axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 
-import { API_URL } from '@/config';
+import { API_URL, UNAUTHENTICATED_API_URL } from '@/config';
 import storage from '@/util/storage';
-// import { useNotificationStore } from '@/stores/notifications';
-// import storage from '@/utils/storage';
 
-function authRequestInterceptor(config: InternalAxiosRequestConfig) {
+export const axios = Axios.create({
+  baseURL: API_URL,
+});
+
+export const axiosForUnauthenticated = Axios.create({
+  baseURL: UNAUTHENTICATED_API_URL,
+});
+
+const authRequestInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = storage.getToken();
   if (!config.headers) {
     return config;
@@ -16,26 +26,19 @@ function authRequestInterceptor(config: InternalAxiosRequestConfig) {
   }
   config.headers.Accept = 'application/json';
   return config;
-}
+};
 
-export const axios = Axios.create({
-  baseURL: API_URL,
-});
+const responseInterceptor = (response: AxiosResponse) => {
+  return response.data;
+};
+
+const errorInterceptor = (error: AxiosError) => {
+  return Promise.reject(error);
+};
 
 axios.interceptors.request.use(authRequestInterceptor);
-
-axios.interceptors.response.use(
-  (response) => {
-    return response.data;
-  },
-  (error) => {
-    // const message = error.response?.data?.message || error.message;
-    // useNotificationStore.getState().addNotification({
-    //   type: 'error',
-    //   title: 'Error',
-    //   message,
-    // });
-
-    return Promise.reject(error);
-  }
+axios.interceptors.response.use(responseInterceptor, errorInterceptor);
+axiosForUnauthenticated.interceptors.response.use(
+  responseInterceptor,
+  errorInterceptor
 );

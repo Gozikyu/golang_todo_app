@@ -9,7 +9,7 @@ export type CreateTaskVariables = {
 };
 
 const createTask = ({ userId, data }: CreateTaskVariables) => {
-  return axios.post(`/restricted/${userId}/tasks`, data);
+  return axios.post(`/${userId}/tasks`, data);
 };
 
 export const useCreateTask = () => {

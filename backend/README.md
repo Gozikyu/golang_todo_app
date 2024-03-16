@@ -19,12 +19,6 @@ curl -X POST \
   -d '{"email":"ichiro@example.com","password":"password"}'
 ```
 
-````bash
-curl -v \
-  http://localhost:8888/restricted/hoge \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiZXhwIjoxNzEwNTkyNTA5fQ.Kj-UjyIuAXitKFBd_XK4mSF1t9Z-KR3yx311D5--P3A'
-```
-
 ## ユーザータスク取得 API
 
 ### 概要
@@ -39,7 +33,7 @@ GET /:userId/tasks
 
 ```bash
 curl http://localhost:8888/1/tasks
-````
+```
 
 ## ユーザータスク作成 API
 
