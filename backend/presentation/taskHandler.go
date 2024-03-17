@@ -1,7 +1,6 @@
 package presentation
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"todo_app/domain"
@@ -31,7 +30,7 @@ func (th *taskHandler) GetTasks() echo.HandlerFunc {
 
 		tasks, err := th.tu.GetUserTasks(userId)
 		if err != nil {
-			return errors.New(fmt.Sprintf("ユーザーの全タスク取得APIでエラーが発生しました。 userId: %v", userId))
+			return fmt.Errorf("ユーザーの全タスク取得APIでエラーが発生しました。 userId: %v", userId)
 		}
 
 		return c.JSON(http.StatusOK, tasks)
@@ -73,7 +72,7 @@ func (th *taskHandler) DeleteTask() echo.HandlerFunc {
 		err := th.tu.DeleteTask(taskId)
 		if err != nil {
 			fmt.Println(err)
-			return errors.New(fmt.Sprintf("ユーザータスク削除APIでエラーが発生しました。 userId: %v", taskId))
+			return fmt.Errorf("ユーザータスク削除APIでエラーが発生しました。 userId: %v", taskId)
 		}
 
 		return c.JSON(http.StatusOK, "success")
@@ -89,12 +88,12 @@ func (th *taskHandler) UpdateTask() echo.HandlerFunc {
 
 		task, err := domain.NewTask(notValidatedTask)
 		if err != nil {
-			return errors.New(fmt.Sprintf("ドメインのタスク型への変換に失敗しました。task: %v", task))
+			return fmt.Errorf("ドメインのタスク型への変換に失敗しました。task: %v", task)
 		}
 
 		err = th.tu.UpdateTask(task)
 		if err != nil {
-			return errors.New(fmt.Sprintf("タスク更新APIでエラーが発生しました。task: %v", task))
+			return fmt.Errorf("タスク更新APIでエラーが発生しました。task: %v", task)
 		}
 
 		return c.JSON(http.StatusOK, "success")

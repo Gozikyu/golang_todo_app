@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"fmt"
 	"todo_app/domain"
 )
@@ -18,7 +17,7 @@ func (u *LoginUsecase) FindUser(email string, password string) (*domain.User, er
 	user, err := u.userRepository.GetUserByEmailAndPassword(email, password)
 	if err != nil {
 		fmt.Print(err)
-		return nil, errors.New(fmt.Sprintf("ユーザーを取得するのに失敗しました"))
+		return nil, fmt.Errorf("ユーザーを取得するのに失敗しました")
 	}
 
 	return user, nil

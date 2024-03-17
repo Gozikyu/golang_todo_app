@@ -2,7 +2,6 @@ package infra
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"time"
 	"todo_app/domain"
@@ -26,13 +25,13 @@ func (r TaskRepository) GetTask(taskId string) (*domain.Task, error) {
 		fmt.Printf("%vのタスクが見つかりませんでした", taskId)
 		return nil, nil
 	} else if err != nil {
-		return nil, errors.New(fmt.Sprintf("%vのタスク取得時にエラーが発生しました", taskId))
+		return nil, fmt.Errorf("%vのタスク取得時にエラーが発生しました", taskId)
 	}
 
 	task, err := domain.NewTask(t)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("%vドメインのタスク型に変換時にエラーが発生しました", t))
+		return nil, fmt.Errorf("%vドメインのタスク型に変換時にエラーが発生しました", t)
 	}
 
 	return task, nil
@@ -45,14 +44,14 @@ func (r TaskRepository) GetTasks(userId string) ([]*domain.Task, error) {
 		fmt.Printf("%vのタスクが見つかりませんでした", userId)
 		return nil, nil
 	} else if err != nil {
-		return nil, errors.New(fmt.Sprintf("%vのタスク取得時にエラーが発生しました", userId))
+		return nil, fmt.Errorf("%vのタスク取得時にエラーが発生しました", userId)
 	}
 
 	tasks := []*domain.Task{}
 	for _, v := range t {
 		task, err := domain.NewTask(v)
 		if err != nil {
-			return nil, errors.New(fmt.Sprintf("%vドメインのタスク型に変換時にエラーが発生しました", t))
+			return nil, fmt.Errorf("%vドメインのタスク型に変換時にエラーが発生しました", t)
 		}
 
 		tasks = append(tasks, task)
@@ -65,7 +64,7 @@ func (r TaskRepository) SaveTask(task *domain.Task) error {
 	_, err := r.db.NamedExec(`INSERT INTO tasks (task_id, user_id, title, description, status) VALUES (:task_id, :user_id, :title, :description, :status)`, task)
 
 	if err != nil {
-		return errors.New(fmt.Sprintf("%vタスクのDB登録時にエラーが発生しました", task))
+		return fmt.Errorf("%vタスクのDB登録時にエラーが発生しました", task)
 	}
 
 	return nil
@@ -75,7 +74,7 @@ func (r TaskRepository) UpdateTask(task *domain.Task) error {
 	_, err := r.db.NamedExec(`UPDATE tasks SET user_id = :user_id, title = :title, description = :description, status = :status WHERE task_id = :task_id`, task)
 
 	if err != nil {
-		return errors.New(fmt.Sprintf("%vタスクの更新時にエラーが発生しました", task))
+		return fmt.Errorf("%vタスクの更新時にエラーが発生しました", task)
 	}
 
 	return nil
@@ -89,7 +88,7 @@ func (r TaskRepository) DeleteTask(taskId string) error {
 
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(fmt.Sprintf("%vタスクの削除時にエラーが発生しました", taskId))
+		return fmt.Errorf("%vタスクの削除時にエラーが発生しました", taskId)
 	}
 
 	return nil

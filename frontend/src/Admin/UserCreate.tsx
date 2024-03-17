@@ -29,6 +29,7 @@ const UserCreate: React.FC<CreateProps> = (props) => {
       <SimpleForm onSubmit={onSave}>
         <TextInput label="ユーザー名" source="name" />
         <TextInput label="メールアドレス" source="email" type="email" />
+        <TextInput label="パスワード" source="password" />
       </SimpleForm>
     </Create>
   );

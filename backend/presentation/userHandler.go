@@ -1,7 +1,6 @@
 package presentation
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -34,7 +33,7 @@ func (uh *userHandler) GetUsers() echo.HandlerFunc {
 
 		users, err := uh.uu.GetUsers()
 		if err != nil {
-			return errors.New(fmt.Sprintf("全ユーザー取得APIでエラーが発生しました。"))
+			return fmt.Errorf("全ユーザー取得APIでエラーが発生しました。")
 		}
 
 		totalCount := len(users)
@@ -51,7 +50,7 @@ func (uh *userHandler) GetUser() echo.HandlerFunc {
 		user, err := uh.uu.GetUser(userId)
 		if err != nil {
 			fmt.Println(err)
-			return errors.New(fmt.Sprintf("ユーザー取得APIでエラーが発生しました。 userId: %v", userId))
+			return fmt.Errorf("ユーザー取得APIでエラーが発生しました。 userId: %v", userId)
 		}
 
 		return c.JSON(http.StatusOK, user)
@@ -67,7 +66,7 @@ func (uh *userHandler) CreateUser() echo.HandlerFunc {
 
 		err := uh.uu.CreateUser(user)
 		if err != nil {
-			return errors.New(fmt.Sprintf("ユーザーの新規作成APIでエラーが発生しました。 user: %v", user))
+			return fmt.Errorf("ユーザーの新規作成APIでエラーが発生しました。 user: %v", user)
 		}
 
 		return c.JSON(http.StatusOK, "success")
@@ -81,7 +80,7 @@ func (uh *userHandler) DeleteUser() echo.HandlerFunc {
 		err := uh.uu.DeleteUser(userId)
 		if err != nil {
 			fmt.Println(err)
-			return errors.New(fmt.Sprintf("ユーザータスク削除APIでエラーが発生しました。 userId: %v", userId))
+			return fmt.Errorf("ユーザータスク削除APIでエラーが発生しました。 userId: %v", userId)
 		}
 
 		return c.JSON(http.StatusOK, "success")
@@ -99,12 +98,12 @@ func (uh *userHandler) UpdateUser() echo.HandlerFunc {
 
 		user, err := domain.NewUser(domain.NotValidatedUser{UserId: userId, Name: newUser.Name, Email: newUser.Email})
 		if err != nil {
-			return errors.New(fmt.Sprintf("ドメインのユーザー型への変換に失敗しました。task: %v", user))
+			return fmt.Errorf("ドメインのユーザー型への変換に失敗しました。task: %v", user)
 		}
 
 		uu, err := uh.uu.UpdateUser(user)
 		if err != nil {
-			return errors.New(fmt.Sprintf("ユーザー更新APIでエラーが発生しました。task: %v", user))
+			return fmt.Errorf("ユーザー更新APIでエラーが発生しました。task: %v", user)
 		}
 
 		return c.JSON(http.StatusOK, uu)

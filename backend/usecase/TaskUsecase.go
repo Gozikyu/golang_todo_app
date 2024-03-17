@@ -35,7 +35,7 @@ func (u *TaskUsecase) CreateTask(newTask domain.NoIdTask) error {
 func (u *TaskUsecase) GetUserTasks(userId string) ([]*domain.Task, error) {
 	tasks, err := u.taskRepository.GetTasks(userId)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("%vのタスク一覧を取得するのに失敗しました", userId))
+		return nil, fmt.Errorf("%vのタスク一覧を取得するのに失敗しました", userId)
 	}
 
 	return tasks, nil
@@ -44,7 +44,7 @@ func (u *TaskUsecase) GetUserTasks(userId string) ([]*domain.Task, error) {
 func (u *TaskUsecase) UpdateTask(task *domain.Task) error {
 	err := u.taskRepository.UpdateTask(task)
 	if err != nil {
-		return errors.New(fmt.Sprintf("%vのタスク更新に失敗しました", task))
+		return fmt.Errorf("%vのタスク更新に失敗しました", task)
 	}
 
 	return nil
@@ -54,7 +54,7 @@ func (u *TaskUsecase) DeleteTask(taskId string) error {
 	err := u.taskRepository.DeleteTask(taskId)
 	if err != nil {
 		fmt.Println(err)
-		return errors.New(fmt.Sprintf("%vのタスク削除に失敗しました", taskId))
+		return fmt.Errorf("%vのタスク削除に失敗しました", taskId)
 	}
 
 	return nil
