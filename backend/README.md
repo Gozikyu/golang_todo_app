@@ -1,16 +1,26 @@
 # Todo App API ドキュメント
 
-## ログイン API
+## ローカルサーバー起動
 
-### 概要
+`go run main.go`
+
+## ローカル DB 起動
+
+`docker-compose up -d`
+
+## API 仕様
+
+### ログイン API
+
+#### 概要
 
 ログインを行う
 
-### エンドポイント
+#### エンドポイント
 
-POST /login
+POST `/login`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X POST \
@@ -19,33 +29,35 @@ curl -X POST \
   -d '{"email":"ichiro@example.com","password":"password"}'
 ```
 
-## ユーザータスク取得 API
+_※ 以降の/restricted がついた API は JWT 認証が行われる_
 
-### 概要
+### ユーザータスク取得 API
+
+#### 概要
 
 特定のユーザーの全タスクを取得
 
-### エンドポイント
+#### エンドポイント
 
-GET /:userId/tasks
+GET `/restricted/:userId/tasks`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
-curl http://localhost:8888/1/tasks
+curl http://localhost:8888/restrected/1/tasks
 ```
 
-## ユーザータスク作成 API
+### ユーザータスク作成 API
 
-### 概要
+#### 概要
 
 新規タスクを作成
 
-### エンドポイント
+#### エンドポイント
 
-POST /:userId/tasks
+POST `/restricted/:userId/tasks`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X POST \
@@ -60,37 +72,37 @@ curl -X POST \
 }'
 ```
 
-## ユーザータスク削除 API
+### ユーザータスク削除 API
 
-### 概要
+#### 概要
 
 タスクを削除
 
-### エンドポイント
+#### エンドポイント
 
-DELETE /:userId/tasks/:taskId
+DELETE `/restricted/:userId/tasks/:taskId`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
-curl -X DELETE http://localhost:8888/1/tasks/101
+curl -X DELETE http://localhost:8888/restricted/1/tasks/101
 ```
 
-## ユーザータスク更新 API
+### ユーザータスク更新 API
 
-### 概要
+#### 概要
 
 タスク内容を更新
 
-### エンドポイント
+#### エンドポイント
 
-PUT /:userId/tasks/:taskId
+PUT `/restricted/:userId/tasks/:taskId`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X PUT \
-  http://localhost:8888/your_user_id/tasks/your_task_id \
+  http://localhost:8888/restricted/1/2 \
   -H 'Content-Type: application/json' \
   -d '{
     "TaskId": "102",
@@ -101,53 +113,53 @@ curl -X PUT \
   }'
 ```
 
-## 全ユーザー取得 API
+### 全ユーザー取得 API
 
-### 概要
+#### 概要
 
 全ユーザーを取得
 
-### エンドポイント
+#### エンドポイント
 
-GET /users
+GET `/restricted/users`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
-curl http://localhost:8888/users
+curl http://localhost:8888/restricted/users
 ```
 
-## ユーザー取得 API
+### ユーザー取得 API
 
-### 概要
+#### 概要
 
 特定ユーザーを取得
 
-### エンドポイント
+#### エンドポイント
 
-GET /users/:userId
+GET `/restricted/users/:userId`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
-curl http://localhost:8888/users/1
+curl http://localhost:8888/restricted/users/1
 ```
 
-## ユーザー作成 API
+### ユーザー作成 API
 
-### 概要
+#### 概要
 
 ユーザーを作成
 
-### エンドポイント
+#### エンドポイント
 
-POST /users
+POST `/restricted/users`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X POST \
-  http://localhost:8888/users \
+  http://localhost:8888/restricted/users \
   -H 'Content-Type: application/json' \
   -d '{
     "UserId": "1",
@@ -156,37 +168,37 @@ curl -X POST \
   }'
 ```
 
-## ユーザー削除 API
+### ユーザー削除 API
 
-### 概要
+#### 概要
 
 ユーザーを削除
 
-### エンドポイント
+#### エンドポイント
 
 DELETE /users/:userId
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X DELETE http://localhost:8888/users/1
 ```
 
-## ユーザー更新 API
+### ユーザー更新 API
 
-### 概要
+#### 概要
 
 ユーザー内容を更新
 
-### エンドポイント
+#### エンドポイント
 
-PUT /users/:userId
+PUT `/restricted/users/:userId`
 
-### サンプルリクエスト
+#### サンプルリクエスト
 
 ```bash
 curl -X PUT \
-  http://localhost:8888/users/1 \
+  http://localhost:8888/restricted/users/1 \
   -H 'Content-Type: application/json' \
   -d '{
     "Name": "Updated Name",
